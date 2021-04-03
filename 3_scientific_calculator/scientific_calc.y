@@ -1,5 +1,6 @@
 %{
 	#include <stdio.h>
+	#include <math.h>
 	#include "symtable.h"
 	int yylex();
 	int yyerror(char *);
@@ -45,11 +46,16 @@ expression: expression '+' expression {$$ = $1 + $3;}
 		  | '(' expression ')' {$$ = $2;}
 		  | NUMBER {$$ = $1;}
 		  | NAME {$$ = $1->value;}
+		  | NAME '(' expression ')' {$$ = $1->funcptr($3);}
 		  ;
 
 %%
 
 int main() {
+	addfunc("sin", sin);
+	addfunc("cos", cos);
+	addfunc("tan", tan);
+	addfunc("sqrt", sqrt);
 	yyparse();
 	return 0;
 }

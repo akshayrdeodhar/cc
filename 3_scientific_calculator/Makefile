@@ -1,5 +1,5 @@
 calc: lex.yy.o y.tab.o symtable.o
-	clang lex.yy.o y.tab.o symtable.o -lfl -ly -o calc
+	clang lex.yy.o y.tab.o symtable.o -lfl -ly -lm -o calc 
 
 lex.yy.c: scientific_calc.l symtable.h
 	flex scientific_calc.l
