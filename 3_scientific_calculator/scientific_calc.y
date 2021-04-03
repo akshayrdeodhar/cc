@@ -21,7 +21,11 @@
 
 %%
 
-statement: NAME '=' expression
+statement_list: statement '\n'
+			  | statement_list statement '\n'
+			  ;
+
+statement: NAME '=' expression {$1->value = $3;}
 		 | expression {printf("%lf\n", $1);}
 		 ;
 
