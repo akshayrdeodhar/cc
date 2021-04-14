@@ -45,23 +45,9 @@ sql_list:
 
 	/* schema definition language */
 	/* Note: other ``sql:'' rules appear later in the grammar */
-sql:		schema
+sql:		schema_element
 	;
 	
-schema:
-		CREATE SCHEMA AUTHORIZATION user opt_schema_element_list
-	;
-
-opt_schema_element_list:
-		/* empty */
-	|	schema_element_list
-	;
-
-schema_element_list:
-		schema_element
-	|	schema_element_list schema_element
-	;
-
 schema_element:
 		base_table_def
 	|	view_def
@@ -173,91 +159,6 @@ grantee:
 	|	user
 	;
 
-	/* module language */
-sql:		module_def
-	;
-
-module_def:
-		MODULE opt_module
-		LANGUAGE lang
-		AUTHORIZATION user
-		opt_cursor_def_list
-		procedure_def_list
-	;
-
-opt_module:
-		/* empty */
-	|	module
-	;
-
-lang:
-		COBOL
-	|	FORTRAN
-	|	PASCAL
-	|	PLI
-	|	C
-	|	ADA
-	;
-
-opt_cursor_def_list:
-		/* empty */
-	|	cursor_def_list
-	;
-
-cursor_def_list:
-		cursor_def
-	|	cursor_def_list cursor_def
-	;
-
-cursor_def:
-		DECLARE cursor CURSOR FOR query_exp opt_order_by_clause
-	;
-
-opt_order_by_clause:
-		/* empty */
-	|	ORDER BY ordering_spec_commalist
-	;
-
-ordering_spec_commalist:
-		ordering_spec
-	|	ordering_spec_commalist ',' ordering_spec
-	;
-
-ordering_spec:
-		INTNUM opt_asc_desc
-	|	column_ref opt_asc_desc
-	;
-
-opt_asc_desc:
-		/* empty */
-	|	ASC
-	|	DESC
-	;
-
-procedure_def_list:
-		procedure_def
-	|	procedure_def_list procedure_def
-	;
-
-procedure_def:
-		PROCEDURE procedure parameter_def_list ';'
-		manipulative_statement_list
-	;
-
-manipulative_statement_list:
-		manipulative_statement
-	|	manipulative_statement_list manipulative_statement
-	;
-
-parameter_def_list:
-		parameter_def
-	|	parameter_def_list parameter_def
-	;
-
-parameter_def:
-		parameter data_type
-	|	SQLCODE
-	;
 
 	/* manipulative statements */
 
@@ -265,17 +166,12 @@ sql:		manipulative_statement
 	;
 
 manipulative_statement:
-		delete_statement_positioned
-	|	delete_statement_searched
+		delete_statement_searched
 	|	insert_statement
 	|	select_statement
-	|	update_statement_positioned
 	|	update_statement_searched
 	;
 
-delete_statement_positioned:
-		DELETE FROM table WHERE CURRENT OF cursor
-	;
 
 delete_statement_searched:
 		DELETE FROM table opt_where_clause
@@ -312,10 +208,6 @@ opt_all_distinct:
 	|	DISTINCT
 	;
 
-update_statement_positioned:
-		UPDATE table SET assignment_commalist
-		WHERE CURRENT OF cursor
-	;
 
 assignment_commalist:
 	|	assignment
@@ -324,7 +216,7 @@ assignment_commalist:
 
 assignment:
 		column '=' scalar_exp
-	|	column '=' NULLX
+	|	column  '=' NULLX
 	;
 
 update_statement_searched:
@@ -338,16 +230,6 @@ opt_where_clause:
 
 	/* query expressions */
 
-query_exp:
-		query_term
-	|	query_exp UNION query_term
-	|	query_exp UNION ALL query_term
-	;
-
-query_term:
-		query_spec
-	|	'(' query_exp ')'
-	;
 
 query_spec:
 		SELECT opt_all_distinct selection table_exp
@@ -418,9 +300,13 @@ predicate:
 	|	existence_test
 	;
 
+comparison_or_assignment:
+		    COMPARISON
+		|   '='
+
 comparison_predicate:
-		scalar_exp COMPARISON scalar_exp
-	|	scalar_exp COMPARISON subquery
+		scalar_exp comparison_or_assignment scalar_exp
+	|	scalar_exp comparison_or_assignment subquery
 	;
 
 between_predicate:
@@ -456,7 +342,7 @@ atom_commalist:
 	;
 
 all_or_any_predicate:
-		scalar_exp COMPARISON any_all_some subquery
+		scalar_exp comparison_or_assignment any_all_some subquery
 	;
 			
 any_all_some:
@@ -555,17 +441,9 @@ data_type:
 column:		NAME
 	;
 
-cursor:		NAME
-	;
-
-module:		NAME
-	;
 
 parameter:
 		':' NAME
-	;
-
-procedure:	NAME
 	;
 
 range_variable:	NAME

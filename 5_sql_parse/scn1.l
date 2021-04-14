@@ -108,10 +108,10 @@ WHENEVER	{ return WHENEVER; }
 WHERE		{ return WHERE; }
 WITH		{ return WITH; }
 WORK		{ return WORK; }
-
 	/* punctuation */
 
-"="	|
+= 		{ return '='; }
+
 "<>" 	|
 "<"	|
 ">"	|
@@ -166,8 +166,8 @@ yyerror(char *s)
 
 main(int ac, char **av)
 {
-	extern int yydebug;
-	yydebug  = 1;
+	//extern int yydebug;
+	//yydebug  = 1;
 	if(ac > 1 && (yyin = fopen(av[1], "r")) == NULL) {
 		perror(av[1]);
 		exit(1);
