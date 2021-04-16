@@ -1,0 +1,27 @@
+Registers:
+ar br cr dr .. zr
+
+Each having opcode representation
+
+1, 2, 3, ... 26
+
+
+Integers:
+
+
+
+Instruction	Condition	Opcode
+add		reg, reg	1 <reg> <reg>
+add		reg, num	2 <reg> <num>
+sub		reg, reg	3 <reg> <reg>
+sub		reg, num	4 <reg>	<num>
+jmp		label 		7 <addr>
+jz		reg, label	8 <reg> <addr> 
+load		address		9 <addr>
+store		address		10 <addr>
+stop		-		11
+mov		reg, num	12 <reg> <num>
+
+
+Opcode, Register, and Immediate value, all take 1 byte. So, the opcode for add
+is 3 byte, that for jmp is 2, that for stop is 1
