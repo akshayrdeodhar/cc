@@ -6,14 +6,16 @@
 
 #define DEBUG 0
 
+
 int count_lines(FILE *fp) {
 		char c;
 		int count = 0;
 		fseek(fp, 0, SEEK_SET);
 		while ((c = fgetc(fp)) != EOF) {
-				if (c == '\n') {
-						++count;
-				}
+		
+			if (c == '\n') {
+				++count;
+			}
 		}
 
 		fseek(fp, 0, SEEK_SET);
@@ -60,17 +62,36 @@ int main(int argc, char *argv[]) {
 #endif
 
 		linecount = 0;
+		int in_word;
+		int words = 0;
 
 		printf(format_string, linecount + 1);
 		while ((c = fgetc(fp)) != EOF) {
-				putchar(c);
-				if (c == '\n') {
-						++linecount;
-						if (linecount < n_lines) {
-							printf(format_string, linecount + 1);
-						}
+			putchar(c);
+			switch(in_word) {
+				case 0:
+					// not in word
+					if (!isspace(c)) {
+						in_word = 1;
+						words++;
+					}
+					break;
+				case 1:
+					// in word
+					if (isspace(c)) {
+						in_word = 0;
+					}
+					break;
+			}
+
+			if (c == '\n') {
+				++linecount;
+				if (linecount < n_lines) {
+					printf(format_string, linecount + 1);
 				}
+			}
 		}
+		printf("Words: %d\n", words);
 
 		return 0;
 }
