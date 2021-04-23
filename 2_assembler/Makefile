@@ -24,4 +24,4 @@ symtable.o: symtable.c symtable.h
 
 .PHONY: clean
 clean: 
-	rm *.o y.tab.c y.tab.h lex.yy.c calc parser.png y.dot
+	rm *.o y.tab.c y.tab.h lex.yy.c calc parser.png y.dot *~ \.*un~

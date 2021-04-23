@@ -3,4 +3,4 @@ ff: ff.cpp
 
 
 clean: 
-	rm ff
+	rm ff *~ \.*un~

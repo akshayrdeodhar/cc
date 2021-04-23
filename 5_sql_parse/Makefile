@@ -23,4 +23,4 @@ scn1.c: scn1.l
 	mv lex.yy.c scn1.c
 
 clean:
-	rm *.c *.o *.out *.h *~ sql1 sql1.output
+	rm *.c *.o *.out *.h *~ sql1 sql1.output \.*un~
